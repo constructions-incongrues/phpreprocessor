@@ -1,5 +1,8 @@
 #!/usr/bin/env php
 <?php
+// For logging
+$stderr = new \SplFileObject('php://stderr', 'w');
+
 try {
 	// Dependencies
 	require(__DIR__.'/../src/Com/AramisAuto/PHPreprocessor.php');
@@ -30,9 +33,6 @@ try {
 			throw new InvalidArgumentException(sprintf('Missing option "--%s"', $option));
 		}
 	}
-	
-	// For logging
-	$stderr = new \SplFileObject('php://stderr', 'w');
 	
 	// Instanciate preprocessor
 	$p = new Com\AramisAuto\PHPreprocessor($stderr);
