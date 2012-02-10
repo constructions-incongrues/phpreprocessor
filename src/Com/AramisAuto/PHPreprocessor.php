@@ -39,7 +39,16 @@ class PHPreprocessor
 		$files = $this->_findDistFiles($options['src']);
 
 		// Unserialize tokens
-		$tokens = parse_ini_file($options['properties']);
+		$tokensFiles = explode(',', $options['properties']);
+		$tokens = array();
+		foreach ($tokensFiles as $tokenFile)
+		{
+			if (!is_readable($tokenFile))
+			{
+				throw new RuntimeException(sprintf('File "%s" is not readable', $tokenFile));
+			}
+			$tokens = array_merge($tokens, parse_ini_file($tokenFile));
+		}
 
 		// Create non -dist files
 		$copied_files = array();
