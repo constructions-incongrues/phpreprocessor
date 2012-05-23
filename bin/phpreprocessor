@@ -10,8 +10,8 @@ try {
 	// Parse CLI arguments
 	// TODO : all this is pretty ugly and has to be reworked
 	// TODO : display command usage on error
-	$optsParsed = getopt('', array('command:', 'src:', 'properties:'));
-	
+	$optsParsed = getopt('', array('command:', 'src:', 'properties:', 'exclude-from:'));
+
 	// Parse command
 	$commandsSpec = array(
 		'extract' => array('mandatory' => array('src')), 
