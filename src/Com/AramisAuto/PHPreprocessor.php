@@ -47,7 +47,7 @@ class PHPreprocessor
 		// Compute merge properties
 		if (isset($options['merge-with'])) {
 			if (!is_readable($options['merge-with'])) {
-				throw new InvalidArgumentException(sprintf('File %s is not readable', $options['merge-with']));
+				throw new \InvalidArgumentException(sprintf('File %s is not readable', $options['merge-with']));
 			}
 			$mergeWith = parse_ini_file($options['merge-with']);
 			$tokens = array_merge($tokens, $mergeWith);
@@ -72,7 +72,7 @@ class PHPreprocessor
 		{
 			if (!is_readable($tokenFile))
 			{
-				throw new RuntimeException(sprintf('File "%s" is not readable', $tokenFile));
+				throw new \RuntimeException(sprintf('File "%s" is not readable', $tokenFile));
 			}
 			$tokens = array_merge($tokens, parse_ini_file($tokenFile));
 		}
