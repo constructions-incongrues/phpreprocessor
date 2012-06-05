@@ -26,6 +26,15 @@ class PHPreprocessor
 		// Extract tokens
 		$tokens = $this->_extractTokensFromFiles($files);
 
+		// Compute merge properties
+		if (isset($options['merge-with'])) {
+			if (!is_readable($options['merge-with'])) {
+				throw new \InvalidArgumentException(sprintf('File %s is not readable', $options['merge-with']));
+			}
+			$mergeWith = parse_ini_file($options['merge-with']);
+			$tokens = array_merge($tokens, $mergeWith);
+		}
+
 		// Exclude tokens
 		if (isset($options['exclude-from'])) {
 			$files = explode(',', $options['exclude-from']);
@@ -35,22 +44,12 @@ class PHPreprocessor
 					throw new \InvalidArgumentException(sprintf('File "%s" can not be read', $file));
 				}
 				// Remove excluded tokens from list
+				// TODO : this should use array_diff_assoc()
 				$tokensExcluded = parse_ini_file($file);
-				foreach (array_keys($tokensExcluded) as $token) {
-					if (isset($tokens[$token])) {
-						unset($tokens[$token]);
-					}
+				foreach ($tokensExcluded as $tokenName => $tokenValue) {
+					unset($tokens[$tokenName]);
 				}
 			}
-		}
-
-		// Compute merge properties
-		if (isset($options['merge-with'])) {
-			if (!is_readable($options['merge-with'])) {
-				throw new \InvalidArgumentException(sprintf('File %s is not readable', $options['merge-with']));
-			}
-			$mergeWith = parse_ini_file($options['merge-with']);
-			$tokens = array_merge($tokens, $mergeWith);
 		}
 
 		// Output results
@@ -131,9 +130,7 @@ class PHPreprocessor
 			if (count($matches[0])) {
 				foreach ($matches[0] as $token) {
 					if (!isset($tokens[$token])) {
-						$tokens[$token] = array($path);
-					} else {
-						$tokens[$token][] = $path;
+						$tokens[$token] = null;
 					}
 				}
 			}
@@ -141,7 +138,7 @@ class PHPreprocessor
 
 		// Cleanup
 		foreach ($tokens as $token => $files) {
-			$tokens[trim($token, '@')] = array_unique($files);
+			$tokens[trim($token, '@')] = null;
 			unset($tokens[$token]);
 		}
 		ksort($tokens);
