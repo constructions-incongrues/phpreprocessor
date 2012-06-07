@@ -73,7 +73,9 @@ class PHPreprocessor
 			{
 				throw new \RuntimeException(sprintf('File "%s" is not readable', $tokenFile));
 			}
+			$errorReporting = error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 			$tokens = array_merge($tokens, parse_ini_file($tokenFile));
+			error_reporting($errorReporting);
 		}
 
 		// Create non -dist files
