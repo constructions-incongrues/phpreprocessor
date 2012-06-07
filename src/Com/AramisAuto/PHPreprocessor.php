@@ -31,7 +31,9 @@ class PHPreprocessor
 			if (!is_readable($options['merge-with'])) {
 				throw new \InvalidArgumentException(sprintf('File %s is not readable', $options['merge-with']));
 			}
+			$errorReporting = error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 			$mergeWith = parse_ini_file($options['merge-with']);
+			error_reporting($errorReporting);
 			$tokens = array_merge($tokens, $mergeWith);
 		}
 
@@ -45,7 +47,9 @@ class PHPreprocessor
 				}
 				// Remove excluded tokens from list
 				// TODO : this should use array_diff_assoc()
+				$errorReporting = error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
 				$tokensExcluded = parse_ini_file($file);
+				error_reporting($errorReporting);
 				foreach ($tokensExcluded as $tokenName => $tokenValue) {
 					unset($tokens[$tokenName]);
 				}
@@ -74,7 +78,7 @@ class PHPreprocessor
 				throw new \RuntimeException(sprintf('File "%s" is not readable', $tokenFile));
 			}
 			$errorReporting = error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-			$tokens = array_merge($tokens, parse_ini_file($tokenFile, INI_SCANNER_RAW));
+			$tokens = array_merge($tokens, parse_ini_file($tokenFile, false, INI_SCANNER_RAW));
 			error_reporting($errorReporting);
 		}
 
