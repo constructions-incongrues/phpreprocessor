@@ -51,7 +51,9 @@ class PHPreprocessor
 				$tokensExcluded = parse_ini_file($file);
 				error_reporting($errorReporting);
 				foreach ($tokensExcluded as $tokenName => $tokenValue) {
-					unset($tokens[$tokenName]);
+					if (!empty($tokensExcluded[$tokenName])) {
+						unset($tokens[$tokenName]);
+					}
 				}
 			}
 		}
