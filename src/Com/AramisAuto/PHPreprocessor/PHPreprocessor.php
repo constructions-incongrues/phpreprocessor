@@ -1,5 +1,5 @@
 <?php
-namespace Com\AramisAuto;
+namespace Com\AramisAuto\PHPreprocessor;
 
 class PHPreprocessor
 {
