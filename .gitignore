@@ -1,3 +1,4 @@
 # editors temporary files
+vendor/
 *.swp
 *~
