@@ -58,6 +58,7 @@ class PHPreprocessor
             if (!is_readable($options['merge-with'])) {
                 throw new \InvalidArgumentException(sprintf('File %s is not readable', $options['merge-with']));
             }
+
             $errorReporting = error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
             $mergeWith = parse_ini_file($options['merge-with'], false, INI_SCANNER_RAW);
             error_reporting($errorReporting);
@@ -83,12 +84,11 @@ class PHPreprocessor
         $tokensFiles = $options['properties'];
         $tokens = array();
 
-        foreach ($tokensFiles as $tokenFile)
-        {
-            if (!is_readable($tokenFile))
-            {
+        foreach ($tokensFiles as $tokenFile) {
+            if (!is_readable($tokenFile)) {
                 throw new \RuntimeException(sprintf('File "%s" is not readable', $tokenFile));
             }
+
             $errorReporting = error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
             $tokens = array_merge($tokens, parse_ini_file($tokenFile, false, INI_SCANNER_RAW));
             error_reporting($errorReporting);
@@ -96,6 +96,7 @@ class PHPreprocessor
 
         // Create non -dist files
         $copied_files = array();
+
         foreach ($files as $file) {
             $new_file = substr($file, 0, strlen($file) - strlen('-dist'));
             copy($file, $new_file); // TODO : sanity checks
@@ -117,6 +118,7 @@ class PHPreprocessor
     {
         $distFiles = array();
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($srcDir, \RecursiveDirectoryIterator::FOLLOW_SYMLINKS));
+
         foreach ($iterator as $path => $fileInfo) {
             if ($fileInfo->isFile()) {
                 if (preg_match('/.*-dist$/', $fileInfo->getFilename())) {
@@ -141,6 +143,7 @@ class PHPreprocessor
     {
         // Extract tokens from files
         $tokens = array();
+
         foreach ($files as $path) {
             $matches = array();
             preg_match_all('/@[a-z0-9\._]*?@/i', file_get_contents($path), $matches);
@@ -158,6 +161,7 @@ class PHPreprocessor
             $tokens[trim($token, '@')] = null;
             unset($tokens[$token]);
         }
+
         ksort($tokens);
 
         return $tokens;
@@ -176,6 +180,7 @@ class PHPreprocessor
         $lines[] = '# Uncomment directives to affect a specific value for this configuration profile.';
 
         $namespaceCurrent = '';
+
         foreach ($tokens as $token => $value) {
             $parts = explode('.', $token);
             $namespace = $parts[0];
@@ -194,6 +199,7 @@ class PHPreprocessor
                 }
             }
         }
+
         $lines[] = '';
 
         return implode("\n", $lines);
@@ -218,6 +224,7 @@ class PHPreprocessor
 
         foreach ($files as $file) {
             $content = file_get_contents($file);
+
             foreach ($tokens as $key => $value) {
                 if ($reverse === false) {
                     $content = str_replace($beginToken.$key.$endToken, $value, $content);
@@ -227,13 +234,16 @@ class PHPreprocessor
                     }
                 }
             }
+
             file_put_contents($file, $content);
         }
 
         $feedbackReverse = '';
+
         if ($reverse) {
             $feedbackReverse = ' in reverse mode';
         }
+
         $this->_logMessage('Replaced %d tokens in %d files%s', array(count($tokens), count($files), $feedbackReverse));
     }
 
