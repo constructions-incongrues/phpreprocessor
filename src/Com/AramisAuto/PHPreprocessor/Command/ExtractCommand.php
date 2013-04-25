@@ -3,6 +3,7 @@ namespace Com\AramisAuto\PHPreprocessor\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Com\AramisAuto\PHPreprocessor\PHPreprocessor;
@@ -13,8 +14,8 @@ class ExtractCommand extends Command
     {
         $this
             ->setName('extract')
-            ->setDescription('Extract tokens from given directory')
-            ->addOption('src', null, InputOption::VALUE_REQUIRED, 'Source directory', '.')
+            ->setDescription('Extract tokens from a directory.')
+            ->addArgument('src', InputArgument::REQUIRED, 'Source directory')
             ->addOption('exclude-from', null, InputOption::VALUE_REQUIRED, '')
             ->addOption('merge-with', null, InputOption::VALUE_REQUIRED, '')
         ;
@@ -26,7 +27,7 @@ class ExtractCommand extends Command
         $stderr = new \SplFileObject('php://stderr', 'w');
 
         // Parse CLI arguments
-        $options = $input->getOptions();
+        $options = array_merge($input->getArguments(), $input->getOptions());
 
         // Instanciate preprocessor
         $p = new PHPreprocessor($stderr);
