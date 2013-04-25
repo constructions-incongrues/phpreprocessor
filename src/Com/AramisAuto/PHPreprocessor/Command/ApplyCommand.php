@@ -15,37 +15,9 @@ class ApplyCommand extends Command
         $this
             ->setName('apply')
             ->setDescription('Apply dist file')
-            ->addOption(
-               'src',
-               null,
-               InputOption::VALUE_REQUIRED,
-               'Source directory',
-               '.'
-            )
-            ->addOption(
-               'properties',
-               null,
-               InputOption::VALUE_REQUIRED,
-               'Properties files'
-            )
-            ->addOption(
-               'exclude-from',
-               null,
-               InputOption::VALUE_NONE,
-               ''
-            )
-            ->addOption(
-               'merge-with',
-               null,
-               InputOption::VALUE_NONE,
-               ''
-            )
-            ->addOption(
-               'reverse',
-               null,
-               InputOption::VALUE_NONE,
-               ''
-            )
+            ->addOption('src', null, InputOption::VALUE_REQUIRED, 'Source directory', '.')
+            ->addOption('properties', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Properties files')
+            ->addOption('reverse', null, InputOption::VALUE_REQUIRED, '')
         ;
     }
 
@@ -55,14 +27,14 @@ class ApplyCommand extends Command
         $stderr = new \SplFileObject('php://stderr', 'w');
 
         // Parse CLI arguments
-        $command = $input->getFirstArgument();
-
         $options = $input->getOptions();
+
+        if (empty($options['properties'])) {
+            throw new \Exception('Please provide at least one properties file.');
+        }
 
         // Instanciate preprocessor
         $p = new PHPreprocessor($stderr);
-
-        // Call appropriate command
-        call_user_func(array($p, $command), $options);
+        $p->apply($options);
     }
 }
