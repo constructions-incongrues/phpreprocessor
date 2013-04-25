@@ -17,7 +17,7 @@ class ApplyCommand extends Command
             ->setDescription('Apply dist file to a a directory.')
             ->addArgument('src', InputArgument::REQUIRED, 'Source directory')
             ->addOption('properties', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Properties files')
-            ->addOption('reverse', null, InputOption::VALUE_NONE)
+            ->addOption('reverse', null, InputOption::VALUE_REQUIRED)
         ;
     }
 
@@ -28,6 +28,10 @@ class ApplyCommand extends Command
 
         // Parse CLI arguments
         $options = array_merge($input->getArguments(), $input->getOptions());
+
+        if (empty($options['reverse'])) {
+            $options['reverse'] = false;
+        }
 
         if (empty($options['properties'])) {
             throw new \Exception('Please provide at least one properties file.');
