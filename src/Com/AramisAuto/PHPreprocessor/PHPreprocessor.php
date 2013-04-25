@@ -28,7 +28,8 @@ class PHPreprocessor
 
         // Exclude tokens
         if (isset($options['exclude-from'])) {
-            $files = explode(',', $options['exclude-from']);
+            $files = $options['exclude-from'];
+
             foreach ($files as $file) {
                 // Sanity checks
                 if (!is_readable($file)) {
@@ -79,8 +80,9 @@ class PHPreprocessor
         $files = $this->_findDistFiles($options['src']);
 
         // Unserialize tokens
-        $tokensFiles = explode(',', $options['properties']);
+        $tokensFiles = $options['properties'];
         $tokens = array();
+
         foreach ($tokensFiles as $tokenFile)
         {
             if (!is_readable($tokenFile))

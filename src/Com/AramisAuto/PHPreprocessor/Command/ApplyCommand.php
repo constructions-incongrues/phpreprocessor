@@ -17,7 +17,7 @@ class ApplyCommand extends Command
             ->setDescription('Apply dist file')
             ->addOption('src', null, InputOption::VALUE_REQUIRED, 'Source directory', '.')
             ->addOption('properties', null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Properties files')
-            ->addOption('reverse', null, InputOption::VALUE_REQUIRED, '')
+            ->addOption('reverse', null, InputOption::VALUE_NONE)
         ;
     }
 
